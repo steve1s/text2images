@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Text to Image Synthesis</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 500px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
+        h2 { text-align: center; }
+        input[type="text"] { width: 100%; padding: 10px; margin: 10px 0 20px 0; border-radius: 4px; border: 1px solid #ccc; }
+        button { width: 100%; padding: 10px; background: #0078d7; color: #fff; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        button:hover { background: #005fa3; }
+        .result { margin-top: 20px; text-align: center; }
+        img { max-width: 100%; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Text to Image Synthesis</h2>
+        <form id="promptForm">
+            <input type="text" id="prompt" placeholder="Enter your text prompt..." required>
+            <button type="submit">Generate Image</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+    <script>
+        document.getElementById('promptForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const prompt = document.getElementById('prompt').value;
+            document.getElementById('result').innerHTML = "Generating image...";
+            const response = await fetch('/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt })
+            });
+            const data = await response.json();
+            if (data.image_url) {
+                document.getElementById('result').innerHTML = `<img src="${data.image_url}" alt="Generated Image">`;
+            } else {
+                document.getElementById('result').innerHTML = "Error generating image.";
+            }
+        };
+    </script>
+</body>
+</html>
